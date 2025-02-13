@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+
+model User {
+  id         String    @id @default(cuid())
+  profilePic String?
+  username   String    @unique
+  email      String    @unique
+  name       String?
+  password   String
+  bio        String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  lastLogin  DateTime?
+  token      String?
+  valToken   String?
+  Book       bookMark[]
+}
+
+
+model Book {
+  asset       String?
+  id          String   @id @default(cuid())
+  cover       String
+  title       String
+  author      String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  genre       BookGenre[]
+  Chapter     Chapter[]
+  bookMark    bookMark[]
+}
+
+model Chapter {
+  id String @id @default(cuid())
+  title String
+  bookId String
+  description String?
+  Book Book @relation(fields: [bookId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Genre {
+  id String @id @default(cuid())
+  title String
+  description String
+  Book BookGenre[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model BookGenre {
+  bookId  String
+  genreId String
+  Book    Book   @relation(fields: [bookId], references: [id])
+  Genre   Genre  @relation(fields: [genreId], references: [id])
+  @@id([bookId, genreId])
+}
+
+model bookMark {
+  id        String   @id @default(cuid())
+  userId    String
+  bookId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id])
+  Book      Book     @relation(fields: [bookId], references: [id])
+
+}
+
