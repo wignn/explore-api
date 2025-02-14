@@ -5,6 +5,7 @@ export class RegisterUserRequest {
   password: string;
 }
 
+
 export class UserResponse {
   id: string;
   name?: string;
