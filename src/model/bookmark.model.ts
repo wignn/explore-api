@@ -5,15 +5,7 @@ export class CreateBookmarkRequest {
     userId: string;
 }
 
-export class CreateBookmarkResponse {
-    id: string;
-    bookId: string;
-    userId: string;
-}
 
-export class DeleteBookmarkRequest {
-    id: string;
-}
 
 export class GetBookmarkRequest {
     userid: string;
