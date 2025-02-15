@@ -1,10 +1,9 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { BookmarkService } from './bookmark.service';
 import { WebResponse } from 'src/model/web.model';
-import { request } from 'http';
 import { CreateBookmarkRequest, GetBookmarkResponse } from 'src/model/bookmark.model';
 
-@Controller('bookmark')
+@Controller('api/bookmark')
 export class BookmarkController {
     constructor(
         private BookmarkService: BookmarkService
@@ -41,7 +40,6 @@ export class BookmarkController {
             data: result,
         }
     }
-
 
 
     @Get('user/:userId')

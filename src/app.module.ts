@@ -6,6 +6,9 @@ import { UserModule } from './user/user.module';
 import { BookModule } from './book/book.module';
 import { AuthModule } from './auth/auth.module';
 import { BookmarkModule } from './bookmark/bookmark.module';
+import { GenreController } from './genre/genre.controller';
+import { GenreService } from './genre/genre.service';
+import { GenreModule } from './genre/genre.module';
 
 @Module({
   imports: [
@@ -14,9 +17,10 @@ import { BookmarkModule } from './bookmark/bookmark.module';
     BookModule,
     AuthModule,
     BookmarkModule,
+    GenreModule,
     
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, GenreController],
+  providers: [AppService, GenreService],
 })
 export class AppModule {}
