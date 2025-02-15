@@ -12,6 +12,17 @@ export class CreateBookResponse {
   description: string;
 }
 
+
+export class BookRes {
+  id: string;
+  title: string;
+  author: string;
+  description: string;
+  cover: string;
+  asset: string;
+}
+
+
 export class updateBookRequest {
   title?: string;
   description?: string;

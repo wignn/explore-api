@@ -26,6 +26,7 @@ model User {
   lastLogin  DateTime?
   token      String?    @default("")
   valToken   String?    @default("")
+  isAdmin    Boolean    @default(false)
   bookmarks  Bookmark[]
 }
 
