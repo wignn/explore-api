@@ -8,7 +8,7 @@ import {
   import { Request } from 'express';
   
 @Injectable()
-export class BookGuard implements CanActivate {
+export class AdminGuard implements CanActivate {
   constructor(private jwtService: JwtService) {}
     async canActivate(context: ExecutionContext): Promise<boolean> {
       const request = context.switchToHttp().getRequest();

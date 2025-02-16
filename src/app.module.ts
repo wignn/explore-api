@@ -9,6 +9,8 @@ import { BookmarkModule } from './bookmark/bookmark.module';
 import { GenreController } from './genre/genre.controller';
 import { GenreService } from './genre/genre.service';
 import { GenreModule } from './genre/genre.module';
+import { JwtService } from '@nestjs/jwt';
+import { ChapterModule } from './chapter/chapter.module';
 
 @Module({
   imports: [
@@ -18,9 +20,10 @@ import { GenreModule } from './genre/genre.module';
     AuthModule,
     BookmarkModule,
     GenreModule,
+    ChapterModule,
     
   ],
   controllers: [AppController, GenreController],
-  providers: [AppService, GenreService],
+  providers: [AppService, GenreService, JwtService],
 })
 export class AppModule {}

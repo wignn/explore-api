@@ -2,14 +2,15 @@ import { WebResponse } from 'src/model/web.model';
 import { BookService } from './book.service';
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
 import { BookRes, CreateBookRequest, UpdateBookResponse } from 'src/model/book.model';
-import { BookGuard } from './guard/book.guard';
+import { AdminGuard } from './guard/admin.guard';
+import { GetGenreResponse } from 'src/model/genre.model';
 
 @Controller('api/book')
 export class BookController {
     constructor(
         private BookService: BookService
     ) {}
-    @UseGuards(BookGuard)
+    @UseGuards(AdminGuard)
     @Post()
     @HttpCode(200)
     async createBook(
@@ -32,7 +33,8 @@ export class BookController {
     }
 
 
-    @UseGuards(BookGuard)
+
+    @UseGuards(AdminGuard)
     @Post(':id')
     @HttpCode(200)
     async updateBook(
@@ -47,7 +49,7 @@ export class BookController {
 
     
 
-    @UseGuards(BookGuard)
+    @UseGuards(AdminGuard)
     @Delete(':id')
     @HttpCode(200)
     async deleteBook(

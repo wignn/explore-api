@@ -2,11 +2,9 @@ import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma.service';
 import { ValidationService } from 'src/common/validate.service';
-import { CreateGenreRequest, GetGenreResponse, UpdateGenreRequest } from 'src/model/genre.model';
+import { BookGenreRequest, BookGenreResponse, CreateGenreRequest, GenreBookListResponse, GetGenreResponse } from 'src/model/genre.model';
 import { Logger } from 'winston';
 import { BookmarkValidation } from './bookmark.validation';
-import { WebResponse } from 'src/model/web.model';
-import { UpdateBookResponse } from 'src/model/book.model';
 
 @Injectable()
 export class GenreService {
@@ -22,15 +20,16 @@ export class GenreService {
         this.logger.info(`Creating new genre ${JSON.stringify(request)}`);
         const createGenreRequest: CreateGenreRequest = this.ValidationService.validate(BookmarkValidation.CREATE, request);
 
-        const bookmark = await this.PrismaService.genre.findFirst({
+        const genre = await this.PrismaService.genre.findFirst({
             where: {
                 title: createGenreRequest.title,
             },  
         })
 
-        if(!bookmark){
-            throw new HttpException(`Genre with title ${createGenreRequest.title} already exist`, 400);
+        if(genre){
+            throw new HttpException(`Genre already exist`, 400);
         }
+
 
         await this.PrismaService.genre.create({
             data: createGenreRequest,
@@ -51,6 +50,7 @@ export class GenreService {
 
     async getGenreById(id: string): Promise<GetGenreResponse> {
         this.logger.info(`Getting genre by id ${id}`);
+        console.log(id);
         const genre = await this.PrismaService.genre.findFirst({
             where: {
                 id: id,
@@ -58,7 +58,7 @@ export class GenreService {
         });
 
         if (!genre) {
-            throw new HttpException(`Genre with id ${id} not found`, 404);
+            throw new HttpException(`Genre not found`, 404);
         }
 
         return {
@@ -81,4 +81,136 @@ export class GenreService {
 
         return "Genre updated";
     }
+
+
+
+
+    async deleteGenre(id: string): Promise<string> {
+        this.logger.info(`Deleting genre ${id}`);
+        const genre = await this.PrismaService.genre.findFirst({
+            where: {
+                id: id,
+            },
+        });
+
+        if (!genre) {
+            throw new HttpException(`Genre not found`, 404);
+        }
+
+        await this.PrismaService.genre.delete({
+            where: {
+                id: id,
+            },
+        });
+
+        return "Genre deleted";
+    }
+
+    /*
+    below is the code for relation table between genre and book
+    */
+
+
+    async createBookGenreRelation(request: BookGenreRequest): Promise<string> {
+        this.logger.info(`Creating book genre relation ${request}`);
+        const genre = await this.PrismaService.genre.findFirst({
+            where: {
+                id: request.genreId,
+            },
+        });
+
+        if (!genre) {
+            throw new HttpException(`Genre not found`, 404);
+        }
+
+        const book = await this.PrismaService.book.findFirst({
+            where: {
+                id: request.bookId,
+            },
+        });
+
+        if (!book) {
+            throw new HttpException(`Book not found`, 404);
+        }
+
+        await this.PrismaService.bookGenre.create({
+            data: {
+                genreId: request.genreId,
+                bookId: request.bookId,
+            },
+        });
+
+        return "Book genre relation created";
+    }
+
+    async getBookListByGenreId(id: string): Promise<BookGenreRequest[]> {
+        this.logger.info(`Getting book list by genre id ${id}`);
+        const genre = await this.PrismaService.bookGenre.findFirst({
+            where: {
+                genreId: id,
+            },
+            include: {
+                Book: true,
+            },
+        });
+   
+     
+        if (!genre) {
+            throw new HttpException(`Genre not found`, 404);
+        }
+
+        return [genre].map((genre) => ({
+            genreId: genre.genreId,
+            bookId: genre.bookId,
+            book: genre.Book,
+        }));
+    }
+
+
+    async deleteBookGenreRelation(request: BookGenreRequest): Promise<string> {
+        this.logger.info(`Deleting book genre relation ${request}`);
+        const genre = await this.PrismaService.genre.findFirst({
+            where: {
+                id: request.genreId,
+            },
+        });
+
+        if (!genre) {
+            throw new HttpException(`Genre not found`, 404);
+        }
+
+        const book = await this.PrismaService.book.findFirst({
+            where: {
+                id: request.bookId,
+            },
+        });
+
+        if (!book) {
+            throw new HttpException(`Book not found`, 404);
+        }
+
+        await this.PrismaService.bookGenre.deleteMany({
+            where: {
+                genreId: request.genreId,
+                bookId: request.bookId,
+            },
+        });
+
+        return "Book genre relation deleted";
+    }
+
+    async getGenreBookList(): Promise<any> {
+        this.logger.info(`Getting genre book list`);
+        
+        const genreList = await this.PrismaService.bookGenre.findMany({
+            include: {
+                Book: true,
+            },
+        });
+        return genreList.map((genre) => ({
+            genreId: genre.genreId,      
+            book: genre.Book
+        }));
+    }
+    
 }

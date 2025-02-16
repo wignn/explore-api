@@ -39,3 +39,20 @@ export class DisconnectGenreRequest {
   genreId: string;
   bookId: string;
 }
+
+
+export class BookGenreResponse {
+  bookId: string;
+  genreId: string;
+}
+
+export class BookGenreRequest {
+  bookId: string;
+  genreId: string;
+}
+
+
+export class GenreBookListResponse {
+  genreId: string;  // Seharusnya satu string, bukan array
+  bookId: string[]; // Karena hasil dari map() adalah array
+}
