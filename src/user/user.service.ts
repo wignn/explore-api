@@ -37,7 +37,7 @@ export class UserService {
         });
 
         if (!user) {
-            throw new HttpException(`User with id ${request} not found`, 404);
+            throw new HttpException(`User not found`, 404);
         }
 
         return {

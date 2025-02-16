@@ -1,9 +1,10 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Post, Body, HttpCode, Patch, UseGuards } from '@nestjs/common';
 import { RegisterUserRequest, LoginUserRequest, ResetRequest, UserResponse } from '../model/user.model';
 import { WebResponse } from 'src/model/web.model';
 import { JwtGuard } from 'src/guards/jwt.guard';
+import { RefreshJwtGuard } from 'src/guards/refresh.guard';
 @Controller('api/auth')
 export class AuthController {
     constructor(private authService: AuthService) { }
@@ -32,17 +33,17 @@ export class AuthController {
         }
     }
 
-    @UseGuards(JwtGuard)
+
+    @UseGuards(RefreshJwtGuard)
     @Post('refresh')
     @HttpCode(200)
-    async refreshToken(
-        @Body() request: LoginUserRequest
-    ): Promise<WebResponse<UserResponse>> {
-        const result = await this.authService.refreshToken(request)
-        return {
-            data: result,
-        }
+    async refreshToken(@Request() req): Promise<WebResponse<UserResponse>> {
+      const result = await this.authService.refreshToken(req.user);
+      return {
+        data: result,
+      };
     }
+  
 
     @Post('password/reset')
     @HttpCode(200)
