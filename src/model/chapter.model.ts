@@ -15,6 +15,6 @@ export class chapterResponse {
     bookId: string;
     content: string;
     description: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
 }

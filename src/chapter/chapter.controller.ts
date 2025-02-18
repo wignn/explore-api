@@ -1,4 +1,12 @@
 import { Controller } from '@nestjs/common';
+import { ChapterService } from './chapter.service';
 
 @Controller('chapter')
-export class ChapterController {}
+export class ChapterController {
+    constructor(
+        private chapterService: ChapterService
+    ) {}
+
+
+    
+}

@@ -48,7 +48,8 @@ model Chapter {
   id          String   @id @default(cuid())
   title       String
   bookId      String
-  description String?
+  description String
+  content     String
   Book        Book     @relation(fields: [bookId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
