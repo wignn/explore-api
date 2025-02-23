@@ -1,24 +1,23 @@
 import { WebResponse } from 'src/model/web.model';
 import { BookService } from './book.service';
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
-import { BookRes, CreateBookRequest, UpdateBookResponse } from 'src/model/book.model';
+import { BookRes, CreateBookRequest, CreateBookResponse, UpdateBookResponse } from 'src/model/book.model';
 import { AdminGuard } from './guard/admin.guard';
-import { GetGenreResponse } from 'src/model/genre.model';
 
 @Controller('api/book')
 export class BookController {
     constructor(
         private BookService: BookService
     ) {}
-    @UseGuards(AdminGuard)
+
     @Post()
     @HttpCode(200)
     async createBook(
         @Body() request: CreateBookRequest
-    ): Promise<WebResponse<string>> {
+    ): Promise<WebResponse<CreateBookResponse>> {
         const result = await this.BookService.createBook(request);
         return {
-            message: result,
+            data: result,
         }
     }
 
@@ -32,7 +31,16 @@ export class BookController {
         }
     }
 
-
+    @Get(':id')
+    @HttpCode(200)
+    async getBoook(
+        @Param('id') query: string,
+    ): Promise<WebResponse<BookRes>> {
+        const result = await this.BookService.getBookQuery(query);
+        return {
+            data: result,
+        }
+    }
 
     @UseGuards(AdminGuard)
     @Post(':id')

@@ -25,7 +25,7 @@ export class GenreService {
                 title: createGenreRequest.title,
             },  
         })
-
+        
         if(genre){
             throw new HttpException(`Genre already exist`, 400);
         }
@@ -48,12 +48,14 @@ export class GenreService {
         }));
     }
 
-    async getGenreById(id: string): Promise<GetGenreResponse> {
-        this.logger.info(`Getting genre by id ${id}`);
-        console.log(id);
+    async getGenreById(query: string): Promise<GetGenreResponse> {
+        this.logger.info(`Getting genre by id ${query}`);
         const genre = await this.PrismaService.genre.findFirst({
             where: {
-                id: id,
+            OR: [
+                { id: query },
+                { title: query }
+            ],
             },
         });
 

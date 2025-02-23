@@ -34,6 +34,10 @@ export class UserService {
                     { email: request },
                 ],
             },
+            include: {
+                bookmarks: true
+            },
+            
         });
 
         if (!user) {
@@ -49,6 +53,11 @@ export class UserService {
             createdAt: user.createdAt.toISOString(),
             token: user.token ?? "",
             lastLogin: user.lastLogin?.toISOString() ?? "",
+            bookmarks: user.bookmarks.map((bookmark) => ({
+                id: bookmark.id,
+                bookId: bookmark.bookId
+            }))
+        
         };
     }
 

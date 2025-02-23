@@ -11,6 +11,7 @@ export class UserResponse {
   name?: string;
   username: string;
   token?: string;
+  isAdmin:boolean;
   backendTokens?: {
     accessToken: string;
     refreshToken: string;
@@ -44,6 +45,7 @@ export class UserGetResponse {
   createdAt: string;
   token?: string;
   lastLogin : string;
+  bookmarks: { id: string,bookId: string }[]
 }
 
 

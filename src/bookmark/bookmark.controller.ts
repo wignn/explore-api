@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
 import { BookmarkService } from './bookmark.service';
 import { WebResponse } from 'src/model/web.model';
 import { CreateBookmarkRequest, GetBookmarkResponse } from 'src/model/bookmark.model';
+import { JwtGuard } from 'src/guards/jwt.guard';
 
 @Controller('api/bookmark')
 export class BookmarkController {
@@ -20,7 +21,7 @@ export class BookmarkController {
         }
     }
 
-
+    @UseGuards(JwtGuard)
     @Delete(':id')
     @HttpCode(200)
     async deleteBookmark(
@@ -32,10 +33,12 @@ export class BookmarkController {
         }
     }
 
-    @Get('list')
+    @Get('list/:id')
     @HttpCode(200)
-    async getBookmarkList(): Promise<WebResponse<GetBookmarkResponse[]>> {
-        const result = await this.BookmarkService.getBookmarkList();
+    async getBookmarkList(
+        @Param('id') id: string,
+    ): Promise<WebResponse<GetBookmarkResponse[]>> {
+        const result = await this.BookmarkService.getBookmarkList(id);
         return {
             data: result,
         }

@@ -30,20 +30,6 @@ model User {
   bookmarks  Bookmark[]
 }
 
-model Book {
-  asset       String?
-  id          String      @id @default(cuid())
-  cover       String
-  title       String
-  author      String
-  description String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  genre       BookGenre[]
-  Chapter     Chapter[]
-  bookMark    Bookmark[]
-}
-
 model Chapter {
   id          String   @id @default(cuid())
   title       String
@@ -53,6 +39,21 @@ model Chapter {
   Book        Book     @relation(fields: [bookId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Book {
+  asset       String?
+  id          String      @id @default(cuid())
+  cover       String
+  title       String
+  author      String
+  description String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  popular     Boolean     @default(false)
+  genre       BookGenre[]
+  Chapter     Chapter[]
+  bookMark    Bookmark[]
 }
 
 model Genre {

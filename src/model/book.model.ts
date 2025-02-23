@@ -1,3 +1,6 @@
+import { chapterResponse } from "./chapter.model";
+import { GetGenreResponse } from "./genre.model";
+
 export class CreateBookRequest {
   cover: string;
   title: string;
@@ -9,7 +12,7 @@ export class CreateBookResponse {
   id: string;
   title: string;
   author: string;
-  description: string;
+  cover: string;
 }
 
 
@@ -20,6 +23,8 @@ export class BookRes {
   description: string;
   cover: string;
   asset: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 
@@ -39,4 +44,5 @@ export class UpdateBookResponse {
   description: string;
   cover: string;
   asset: string;
+
 }

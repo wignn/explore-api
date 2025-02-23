@@ -13,12 +13,12 @@ import {
     async canActivate(context: ExecutionContext): Promise<boolean> {
       const request = context.switchToHttp().getRequest();
       const token = this.extractTokenFromHeader(request);
-  
+
       if (!token) throw new UnauthorizedException();
   
       try {
         const payload = await this.jwtService.verifyAsync(token, {
-          secret: process.env.JWT_REFRES_TOKEN,
+          secret: process.env.JWT_REFRESH_TOKEN,
         });
         request['user'] = payload;
       } catch {

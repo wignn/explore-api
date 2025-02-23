@@ -41,9 +41,17 @@ export class BookmarkService {
     }
 
 
-    async getBookmarkList(): Promise<GetBookmarkResponse[]> {
+    async getBookmarkList(id: string): Promise<GetBookmarkResponse[]> {
         this.logger.info(`Getting bookmark list`);
-        const bookmarkList = await this.PrismaService.bookmark.findMany();
+        const bookmarkList = await this.PrismaService.bookmark.findMany({
+        where:{
+            OR:[{
+                bookId: id,
+            },
+            {    
+                userId: id,}]}
+            }
+        );
         return bookmarkList.map((bookmark) => ({
             id: bookmark.id,
             bookId: bookmark.bookId,

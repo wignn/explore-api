@@ -38,6 +38,7 @@ export class AuthController {
     @Post('refresh')
     @HttpCode(200)
     async refreshToken(@Request() req): Promise<WebResponse<UserResponse>> {
+        console.log(req.user);
       const result = await this.authService.refreshToken(req.user);
       return {
         data: result,

@@ -70,6 +70,7 @@ export class AuthService {
             id: data.id,
             username: data.username,
             name: data.name ?? "",
+            isAdmin: data.isAdmin,
             token: data.token ?? "",
             backendTokens: {
                 accessToken: await this.jwtService.signAsync(payload, {
@@ -108,6 +109,7 @@ export class AuthService {
 
         return {
             id: user.id,
+            isAdmin: user.isAdmin,
             username: user.username,
             name: user.name ?? "",
         };
@@ -219,15 +221,17 @@ export class AuthService {
     async refreshToken(user: any): Promise<UserResponse> {
         const payload = {
             username: user.username,
-            isAdmin: user.isAdmin,
             sub: {
                 name: user.name,
             },
         };
+
+        console.log(payload)
         return {
             id: user.id,
             username: user.username,
             name: user.name,
+            isAdmin: user.isAdmin,
             token: user.token,
             backendTokens: {
                 accessToken: await this.jwtService.signAsync(payload, {
@@ -236,7 +240,7 @@ export class AuthService {
                 }),
                 refreshToken: await this.jwtService.signAsync(payload, {
                     expiresIn: '7d',
-                    privateKey: process.env.JWT_REFRES_TOKEN,
+                    privateKey: process.env.JWT_REFRESH_TOKEN,
                 }),
             },
         };
