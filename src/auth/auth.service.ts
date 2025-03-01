@@ -11,6 +11,7 @@ import { UserValidation } from 'src/user/user.validation';
 import { LoginUserRequest, RegisterUserRequest, ResetRequest, UserResponse } from 'src/model/user.model';
 import { sendMail } from 'src/utils/mailer';
 import { authValidation } from './auth.validation';
+import { log } from 'console';
 
 @Injectable()
 export class AuthService {
@@ -99,12 +100,16 @@ export class AuthService {
         });
 
         if (totalUserWithSameUsername != 0) {
+            this.logger.info(`Username already exists`);
             throw new HttpException('Username already exists', 400);
         }
         registerRequest.password = await bcrypt.hash(registerRequest.password, 10);
 
         const user = await this.prismaService.user.create({
-            data: registerRequest,
+            data: {
+                ...registerRequest,
+                profilePic:'https://files.edgestore.dev/93ti9i3vqygrxg8l/myPublicImage/_public/b7608d16-14b6-4e2c-8efd-1ded26235976.png'
+            }
         });
 
         return {
@@ -195,8 +200,8 @@ export class AuthService {
     }
 
 
-    async logout(request: logoutRequest): Promise<boolean> {
-
+    async logout(request: logoutRequest): Promise<string> {
+        console.log(request)
         if (!request.username) {
             throw new HttpException('User not found', 404);
         }
@@ -204,6 +209,18 @@ export class AuthService {
             authValidation.LOGOUT,
             request,
         )
+
+        const isValid = await this.prismaService.user.findFirst({
+            where: {
+                token:request.token
+            }
+        })
+
+
+        if(!isValid){
+            throw new HttpException('Unauthorized', 401);
+        }
+
 
         const result = await this.prismaService.user.update({
             where: {
@@ -214,7 +231,7 @@ export class AuthService {
             },
         });
 
-        return true
+        return 'logout successful';
     }
 
 

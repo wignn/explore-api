@@ -3,6 +3,7 @@ import { BookGenreRequest, CreateGenreResponse, GetGenreResponse } from 'src/mod
 import { WebResponse } from 'src/model/web.model';
 import { GenreService } from './genre.service';
 import { AdminGuard } from '../book/guard/admin.guard';
+import { JwtGuard } from 'src/guards/jwt.guard';
 
 @Controller('api/genre')
 export class GenreController {
@@ -19,7 +20,7 @@ export class GenreController {
         };
     }
 
-    @UseGuards(AdminGuard)
+    @UseGuards(JwtGuard)
     @Post()
     @HttpCode(200)
     async createGenre(
@@ -27,7 +28,7 @@ export class GenreController {
     ): Promise<WebResponse<CreateGenreResponse>> {
         const result = await this.genreService.createGenre(request);
         return {
-            message: result,
+            data: result,
         };
     }
 
@@ -45,20 +46,20 @@ export class GenreController {
     }
 
 
-    @UseGuards(AdminGuard)
+    @UseGuards(JwtGuard)
     @Put(':id')
     @HttpCode(200)
     async updateGenre(
-        @Body() request: CreateGenreResponse,
+        @Body() request: { title: string, description: string },
         @Param('id') id: string
-    ):Promise<WebResponse<string>> {
+    ):Promise<WebResponse<CreateGenreResponse>> {
         const result = await this.genreService.updateGenre(id, request);
         return {
-            message: result,
+            data: result,
         };
     }
 
-    @UseGuards(AdminGuard)
+    @UseGuards(JwtGuard)
     @Delete(':id')
     @HttpCode(200)
     async deleteGenre(

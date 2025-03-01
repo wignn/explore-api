@@ -11,7 +11,7 @@ export class UserResponse {
   name?: string;
   username: string;
   token?: string;
-  isAdmin:boolean;
+  isAdmin?:boolean;
   backendTokens?: {
     accessToken: string;
     refreshToken: string;
@@ -30,7 +30,6 @@ export class ResetRequest {
 }
 
 export class UpdateUserRequest {
-  id: string;
   bio?: string;
   name?: string;
   profilePic?: string;
@@ -58,6 +57,7 @@ export class UpdateUserRespone {
 
 export class logoutRequest {
   username: string;
+  token: string;
 }
 
 

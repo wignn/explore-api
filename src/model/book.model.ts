@@ -6,13 +6,30 @@ export class CreateBookRequest {
   title: string;
   author: string;
   description: string;
+  status: BookStatus;
+  language: Language;
+  realaseDate: number;
 }
 
+enum Language {
+  English = "English",
+  Japanese = "Japanese",
+  Korean = "Korean",
+}
+
+enum BookStatus {
+  Completed = "Completed",
+  Drop = "Drop",
+  Ongoing = "Ongoing",
+}
 export class CreateBookResponse {
   id: string;
   title: string;
   author: string;
   cover: string;
+  status: string;
+  language: string;
+  realaseDate: number;
 }
 
 
@@ -34,6 +51,9 @@ export class updateBookRequest {
   asset?: string;
   cover?: string;
   author?: string;
+  status?: BookStatus;
+  language?: Language;
+  realaseDate?: number;
 }
 
 
@@ -44,5 +64,9 @@ export class UpdateBookResponse {
   description: string;
   cover: string;
   asset: string;
-
+  createdAt: Date;
+  updatedAt: Date;
+  status: string;
+  language: string;
+  realaseDate: number;
 }

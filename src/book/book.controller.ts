@@ -3,6 +3,7 @@ import { BookService } from './book.service';
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
 import { BookRes, CreateBookRequest, CreateBookResponse, UpdateBookResponse } from 'src/model/book.model';
 import { AdminGuard } from './guard/admin.guard';
+import { JwtGuard } from 'src/guards/jwt.guard';
 
 @Controller('api/book')
 export class BookController {
@@ -10,6 +11,7 @@ export class BookController {
         private BookService: BookService
     ) {}
 
+    @UseGuards(JwtGuard)
     @Post()
     @HttpCode(200)
     async createBook(
@@ -33,7 +35,7 @@ export class BookController {
 
     @Get(':id')
     @HttpCode(200)
-    async getBoook(
+    async getBook(
         @Param('id') query: string,
     ): Promise<WebResponse<BookRes>> {
         const result = await this.BookService.getBookQuery(query);
@@ -41,8 +43,20 @@ export class BookController {
             data: result,
         }
     }
+    
+    @Get(':id/:page')
+    @HttpCode(200)
+    async getBookListPage(
+        @Param('id') query: string,
+        @Param('page') page: number
+    ): Promise<WebResponse<BookRes>> {
+        const result = await this.BookService.getBookQueryPage(query, page);
+        return {
+            data: result,
+        }
+    }
 
-    @UseGuards(AdminGuard)
+    @UseGuards(JwtGuard)
     @Post(':id')
     @HttpCode(200)
     async updateBook(
@@ -57,7 +71,7 @@ export class BookController {
 
     
 
-    @UseGuards(AdminGuard)
+    @UseGuards(JwtGuard)
     @Delete(':id')
     @HttpCode(200)
     async deleteBook(

@@ -2,7 +2,7 @@ import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma.service';
 import { ValidationService } from 'src/common/validate.service';
-import { BookGenreRequest, BookGenreResponse, CreateGenreRequest, GenreBookListResponse, GetGenreResponse } from 'src/model/genre.model';
+import { BookGenreRequest, BookGenreResponse, CreateGenreRequest, CreateGenreResponse, GenreBookListResponse, GetGenreResponse } from 'src/model/genre.model';
 import { Logger } from 'winston';
 import { BookmarkValidation } from './bookmark.validation';
 
@@ -16,7 +16,7 @@ export class GenreService {
     ) { }
 
 
-    async createGenre(request: CreateGenreRequest): Promise<string> {
+    async createGenre(request: CreateGenreRequest): Promise<CreateGenreResponse> {
         this.logger.info(`Creating new genre ${JSON.stringify(request)}`);
         const createGenreRequest: CreateGenreRequest = this.ValidationService.validate(BookmarkValidation.CREATE, request);
 
@@ -31,11 +31,11 @@ export class GenreService {
         }
 
 
-        await this.PrismaService.genre.create({
+        const res = await this.PrismaService.genre.create({
             data: createGenreRequest,
         });
 
-        return "Genre created";
+        return res
     }
 
     async getGenreList(): Promise<GetGenreResponse[]> {
@@ -45,6 +45,8 @@ export class GenreService {
             id: genre.id,
             title: genre.title,
             description: genre.description,
+            updatedAt: genre.updatedAt,
+            createdAt: genre.createdAt,
         }));
     }
 
@@ -67,21 +69,23 @@ export class GenreService {
             id: genre.id,
             title: genre.title,
             description: genre.description,
+            updatedAt: genre.updatedAt,
+            createdAt: genre.createdAt,
         };
     }
 
-    async updateGenre(id: string, request: CreateGenreRequest): Promise<string> {
+    async updateGenre(id: string, request: CreateGenreRequest): Promise<CreateGenreResponse> {
         this.logger.info(`Updating genre ${id} with ${JSON.stringify(request)}`);
         const updateGenreRequest: CreateGenreRequest = this.ValidationService.validate(BookmarkValidation.UPDATE, request);
 
-        await this.PrismaService.genre.update({
+        const genre = await this.PrismaService.genre.update({
             where: {
                 id: id,
             },
             data: updateGenreRequest,
         });
 
-        return "Genre updated";
+        return genre;
     }
 
 
@@ -149,7 +153,16 @@ export class GenreService {
         this.logger.info(`Getting book list by genre id ${id}`);
         const genre = await this.PrismaService.bookGenre.findFirst({
             where: {
-                genreId: id,
+                OR:[
+                    {
+                        genreId: id,
+                    },
+                    {
+                        bookId: id,
+                    }
+
+                ]
+           
             },
             include: {
                 Book: true,

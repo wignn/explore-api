@@ -62,7 +62,7 @@ export class UserService {
     }
 
 
-    async update(request: UpdateUserRequest): Promise<UpdateUserRespone> {
+    async update(id: string,  request: UpdateUserRequest): Promise<UpdateUserRespone> {
         this.logger.info(`Updating user ${JSON.stringify(request)}`);
         const updateUser: UpdateUserRequest = this.validationService.validate(
             UserValidation.UPDATE,
@@ -70,7 +70,7 @@ export class UserService {
         );
 
         const user = await this.prismaService.user.findUnique({
-            where: { id: updateUser.id },
+            where: { id },
         });
 
         if (!user) {
@@ -78,7 +78,7 @@ export class UserService {
         }
 
         await this.prismaService.user.update({
-            where: { id: request.id },
+            where: { id},
             data: updateUser,
         });
 

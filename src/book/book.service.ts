@@ -29,7 +29,11 @@ export class BookService {
             id: book.id,
             title: book.title,
             cover: book.cover,
-            author: book.author
+            author: book.author,
+            status: book.status,
+            language: book.language,
+            realaseDate: book.realaseDate
+
         };
     }
 
@@ -110,10 +114,76 @@ export class BookService {
                         }
                     }
                 },
-                Chapter: true
+                Chapter: true,
+                bookMark: true
             }
         });
         return book
+    }
+
+
+    async getBookQueryPage(query: string, page: number): Promise<any> {
+        this.logger.info(`Getting book by id ${query} on page ${page}`);
+        const itemsPerPage = 20;
+        const skip = (page - 1) * itemsPerPage;
+
+        const books = await this.PrismaService.book.findMany({
+            where: {
+                OR: [
+                    {
+                        id: {
+                            contains: query
+                        }
+                    },
+                    {
+                        title: {
+                            contains: query
+                        }
+                    }
+                ]
+            },
+            include: {
+                genre: {
+                    include: {
+                        Genre: {
+                            select: {
+                                title: true,
+                                id: true
+                            }
+                        }
+                    }
+                },
+                Chapter: true
+            },
+            take: itemsPerPage,
+            skip: skip
+        });
+
+        const total = await this.PrismaService.book.count({
+            where: {
+                OR: [
+                    {
+                        id: {
+                            contains: query
+                        }
+                    },
+                    {
+                        title: {
+                            contains: query
+                        }
+                    }
+                ]
+            }
+        });
+
+        return {
+            data: books,
+            meta: {
+                total,
+                page,
+                lastPage: Math.ceil(total / itemsPerPage)
+            }
+        };
     }
 
 
@@ -132,20 +202,36 @@ export class BookService {
 
         return {
             ...book,
-            asset: book.asset ?? ''
+            asset: book.asset ?? '',
+
         };
     }
 
-
     async deleteBook(id: string): Promise<string> {
-        this.logger.info(`Deleting book ${id} with ${JSON.stringify(request)}`);
+        this.logger.info(`Deleting book ${id}`);
+
+
+
+        await this.PrismaService.bookGenre.deleteMany({
+            where: {
+                bookId: id,
+            }
+        });
+    
+
+        await this.PrismaService.bookmark.deleteMany({
+            where:{
+                bookId:id
+            }
+        })
 
         await this.PrismaService.book.delete({
             where: {
                 id: id,
             }
         });
-
+    
         return "Book deleted";
     }
+    
 }

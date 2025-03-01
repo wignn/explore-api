@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpCode, Param, Put, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import {  UpdateUserRequest, UpdateUserRespone, UserResponse } from '../model/user.model';
+import {  UpdateUserRequest, UpdateUserRespone, UserGetResponse, UserResponse } from '../model/user.model';
 import { WebResponse } from 'src/model/web.model';
 import { JwtGuard } from 'src/guards/jwt.guard';
 /*
@@ -27,7 +27,7 @@ export class UserController {
     @HttpCode(200)
     async getUserById(
         @Param('id') id: string
-    ): Promise<WebResponse<UserResponse>> {
+    ): Promise<WebResponse<UserGetResponse>> {
         const result = await this.UserService.findByid(id);
         return {
             data: result,
@@ -35,12 +35,13 @@ export class UserController {
     }
 
     @UseGuards(JwtGuard)
-    @Put()
+    @Put(":id")
     @HttpCode(200)
     async updateUser(
+        @Param('id') id: string,
         @Body() request: UpdateUserRequest
     ): Promise<WebResponse<UpdateUserRespone>> {
-        const result = await this.UserService.update(request);
+        const result = await this.UserService.update(id, request);
         return {
             data: result,
         }

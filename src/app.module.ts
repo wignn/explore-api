@@ -11,6 +11,8 @@ import { GenreService } from './genre/genre.service';
 import { GenreModule } from './genre/genre.module';
 import { JwtService } from '@nestjs/jwt';
 import { ChapterModule } from './chapter/chapter.module';
+import { AdminModule } from './admin/admin.module';
+import { TestModule } from 'test/test.module';
 
 @Module({
   imports: [
@@ -21,9 +23,10 @@ import { ChapterModule } from './chapter/chapter.module';
     BookmarkModule,
     GenreModule,
     ChapterModule,
-    
+    AdminModule,
+    TestModule,
   ],
-  controllers: [AppController, GenreController],
-  providers: [AppService, GenreService, JwtService],
+  controllers: [AppController],
+  providers: [AppService, JwtService],
 })
 export class AppModule {}

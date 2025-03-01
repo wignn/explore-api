@@ -37,12 +37,22 @@ export class AuthController {
     @UseGuards(RefreshJwtGuard)
     @Post('refresh')
     @HttpCode(200)
-    async refreshToken(@Request() req): Promise<WebResponse<UserResponse>> {
-        console.log(req.user);
-      const result = await this.authService.refreshToken(req.user);
+    async refreshToken(@Body() request): Promise<WebResponse<UserResponse>> {
+      const result = await this.authService.refreshToken(request);
       return {
         data: result,
       };
+    }
+
+    @Patch('logout')
+    @HttpCode(200)
+    async logout (
+        @Body () request
+    ): Promise<WebResponse<string>> {
+        const result = await this.authService.logout(request);
+        return {
+            message: result,
+        };
     }
   
 

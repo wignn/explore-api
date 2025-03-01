@@ -49,13 +49,18 @@ export class BookmarkService {
                 bookId: id,
             },
             {    
-                userId: id,}]}
-            }
+                userId: id,}]},
+                include: {
+                    Book:true
+                }
+            },
         );
         return bookmarkList.map((bookmark) => ({
             id: bookmark.id,
             bookId: bookmark.bookId,
             userId: bookmark.userId,
+            
+            book: bookmark.Book 
         }));
     }
 
@@ -67,11 +72,27 @@ export class BookmarkService {
             where: {
                 userId: userId,
             },
+            include:{
+                Book:{
+                    select:{
+                        Chapter:true
+                }
+                
+            }}
         });
         return bookmarkList.map((bookmark) => ({
             id: bookmark.id,
             bookId: bookmark.bookId,
             userId: bookmark.userId,
+            chapter: bookmark.Book.Chapter.map((chapter) => ({
+                id: chapter.id,
+                title: chapter.title,
+                description: chapter.description,
+                content: chapter.content,
+                bookId: chapter.bookId,
+                createdAt: chapter.createdAt,
+                updatedAt: chapter.updatedAt
+            })),
         }));
     }
 }

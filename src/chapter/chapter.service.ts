@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma.service';
 import { ValidationService } from 'src/common/validate.service';
@@ -13,16 +13,46 @@ export class ChapterService {
         @Inject(WINSTON_MODULE_PROVIDER)
         private logger: Logger,
         private PrismaService: PrismaService
-    ) {}
+    ) { }
 
-    async createChapter(request: createChapterRequest):Promise<string> {
+    async createChapter(request: createChapterRequest): Promise<string> {
         this.logger.info(`Creating new chapter ${JSON.stringify(request)}`);
         const createChapterRequest: createChapterRequest = this.ValidationService.validate(ChapterValidation.CREATE, request);
 
+        const book = await this.PrismaService.book.count({
+            where: {
+                id: createChapterRequest.bookId
+            }
+        });
+        if (!book) {
+            new HttpException('Book not found', 400);
+        }
+
+        const lastChapter = await this.PrismaService.chapter.findFirst({
+            where: { bookId: createChapterRequest.bookId },
+            orderBy: { chapterNum: 'desc' }, 
+            select: { chapterNum: true }
+        });
+    
+        const newChapterNum = lastChapter ? lastChapter.chapterNum + 1 : 1;
+
         await this.PrismaService.chapter.create({
-            data: createChapterRequest,
+            data:{
+                ...createChapterRequest,
+                chapterNum: newChapterNum
+            },
         });
 
+        await this.PrismaService.book.update({
+            where: {
+                id: createChapterRequest.bookId
+            },
+            data: {
+                updatedAt: new Date()
+            }
+        })
+
+        this.logger.info(`Chapter created`);
         return "Chapter created";
     }
 
@@ -35,32 +65,27 @@ export class ChapterService {
             title: chapter.title,
             content: chapter.content,
             bookId: chapter.bookId,
-            description: chapter.description, 
+            description: chapter.description,
             createdAt: chapter.createdAt,
             updatedAt: chapter.updatedAt,
+            chapterNum: chapter.chapterNum
         }));
     }
 
 
-    async getChapterByID(bookId: string): Promise<chapterResponse[]> {
-        this.logger.info(`Getting chapter list by book id ${bookId}`);
-        const chapterList = await this.PrismaService.chapter.findMany({
+    async getChapterByID(chapterId: string): Promise<chapterResponse> {
+        this.logger.info(`Getting chapter list by book id ${chapterId}`);
+        const chapterList = await this.PrismaService.chapter.findFirst({
             where: {
-            OR: [
-                { bookId: bookId },
-                { id: bookId }
-            ]
+                id: chapterId
+            },include:{
+                Book: true
+
             }
-        });
-        return chapterList.map((chapter) => ({
-            id: chapter.id,
-            title: chapter.title,
-            content: chapter.content,
-            bookId: chapter.bookId,
-            description: chapter.description, 
-            createdAt: chapter.createdAt,
-            updatedAt: chapter.updatedAt,
-        }));
+
+        })
+        return chapterList
+
     }
 
     async updateChapter(id: string, request: createChapterRequest): Promise<chapterResponse> {
@@ -74,6 +99,7 @@ export class ChapterService {
             },
             data: updateChapterRequest,
         })
+        this.logger.info(`Chapter updated`);
 
         return {
             ...chapter,
@@ -91,6 +117,7 @@ export class ChapterService {
             }
         });
 
+        this.logger.info(`Chapter deleted`);
         return "Chapter deleted";
     }
 }

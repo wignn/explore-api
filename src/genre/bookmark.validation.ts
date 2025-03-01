@@ -9,7 +9,6 @@ export class BookmarkValidation {
     })
 
     static readonly UPDATE: ZodType = z.object({
-        id: z.string(),
         title: z.string().min(3).max(255).optional(),
         description: z.string().min(3).max(255).optional(),
     })
