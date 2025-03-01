@@ -99,9 +99,16 @@ export class AuthService {
             },
         });
 
-        if (totalUserWithSameUsername != 0) {
+        const totalUserWithSameEmail = await this.prismaService.user.count({
+            where: {
+                email: registerRequest.email,
+            },
+        })
+
+
+        if (totalUserWithSameUsername != 0 || totalUserWithSameEmail != 0) {
             this.logger.info(`Username already exists`);
-            throw new HttpException('Username already exists', 400);
+            throw new HttpException('Username already exists', 409);
         }
         registerRequest.password = await bcrypt.hash(registerRequest.password, 10);
 
