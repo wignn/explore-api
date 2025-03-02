@@ -52,6 +52,7 @@ export class UserService {
             email: user.email,
             createdAt: user.createdAt.toISOString(),
             token: user.token ?? "",
+            isAdmin: user.isAdmin,
             lastLogin: user.lastLogin?.toISOString() ?? "",
             bookmarks: user.bookmarks.map((bookmark) => ({
                 id: bookmark.id,

@@ -43,6 +43,7 @@ export class UserGetResponse {
   email: string;
   createdAt: string;
   token?: string;
+  isAdmin?:boolean;
   lastLogin : string;
   bookmarks: { id: string,bookId: string }[]
 }
