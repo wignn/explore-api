@@ -30,14 +30,14 @@ export class ChapterService {
 
         const lastChapter = await this.PrismaService.chapter.findFirst({
             where: { bookId: createChapterRequest.bookId },
-            orderBy: { chapterNum: 'desc' }, 
+            orderBy: { chapterNum: 'desc' },
             select: { chapterNum: true }
         });
-    
+
         const newChapterNum = lastChapter ? lastChapter.chapterNum + 1 : 1;
 
         await this.PrismaService.chapter.create({
-            data:{
+            data: {
                 ...createChapterRequest,
                 chapterNum: newChapterNum
             },
@@ -78,12 +78,17 @@ export class ChapterService {
         const chapterList = await this.PrismaService.chapter.findFirst({
             where: {
                 id: chapterId
-            },include:{
-                Book: true
+            }, include: {
+                Book: {
+                    select: {
+                        Chapter: true
+                    }
+                }
 
             }
 
         })
+
         return chapterList
 
     }
