@@ -7,11 +7,9 @@ import { ValidationService } from 'src/common/validate.service';
 import { Logger } from 'winston';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
-import { UserValidation } from 'src/user/user.validation';
 import { LoginUserRequest, RegisterUserRequest, ResetRequest, UserResponse } from 'src/model/user.model';
 import { sendMail } from 'src/utils/mailer';
 import { authValidation } from './auth.validation';
-import { log } from 'console';
 
 @Injectable()
 export class AuthService {
@@ -191,17 +189,9 @@ export class AuthService {
                 valToken,
             },
         });
-        const html = `
-        <html>
-          <body style="font-family: Arial, sans-serif; line-height: 1.6;">
-            <h2 style="color: #333;">Email Verification</h2>
-            <p>Click the link below to verify your email:</p>
-            <a href="http://localhost:3000/api/users/verify/${valToken}" style="color: #1a73e8;">Verify Email</a>
-          </body>
-        </html>
-      `;
+       
 
-        const result = sendMail({ email: request.email, subject: 'Email verification', text: 'Email verification', html });
+        const result = sendMail({ email: request.email, subject: 'Email verification', text: 'Email verification', valtoken: valToken });
 
         return result;
     }
@@ -229,7 +219,7 @@ export class AuthService {
         }
 
 
-        const result = await this.prismaService.user.update({
+        await this.prismaService.user.update({
             where: {
                 username: logoutUser.username,
             },
