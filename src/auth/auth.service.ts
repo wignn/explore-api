@@ -2,13 +2,13 @@ import { logoutRequest } from './../model/user.model';
 import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { PrismaService } from 'src/common/prisma.service';
-import { ValidationService } from 'src/common/validate.service';
+import { PrismaService } from '../common/prisma.service';
+import { ValidationService } from '../common/validate.service';
 import { Logger } from 'winston';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
-import { LoginUserRequest, RegisterUserRequest, ResetRequest, UserResponse } from 'src/model/user.model';
-import { sendMail } from 'src/utils/mailer';
+import { LoginUserRequest, RegisterUserRequest, ResetRequest, UserResponse } from '../model/user.model';
+import { sendMail } from '../utils/mailer';
 import { authValidation } from './auth.validation';
 
 @Injectable()

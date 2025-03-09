@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
 import { ChapterService } from './chapter.service';
-import { WebResponse } from 'src/model/web.model';
-import { chapterResponse, createChapterRequest } from 'src/model/chapter.model';
-import { JwtGuard } from 'src/guards/jwt.guard';
+import { WebResponse } from '../model/web.model';
+import { chapterResponse, createChapterRequest } from '../model/chapter.model';
+import { JwtGuard } from '../guards/jwt.guard';
 
 @Controller('api/chapter')
 export class ChapterController {

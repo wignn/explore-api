@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
 import { BookmarkService } from './bookmark.service';
-import { WebResponse } from 'src/model/web.model';
-import { CreateBookmarkRequest, GetBookmarkResponse } from 'src/model/bookmark.model';
-import { JwtGuard } from 'src/guards/jwt.guard';
+import { WebResponse } from '../model/web.model';
+import { CreateBookmarkRequest, GetBookmarkResponse } from '../model/bookmark.model';
+import { JwtGuard } from '../guards/jwt.guard';
 
 @Controller('api/bookmark')
 export class BookmarkController {

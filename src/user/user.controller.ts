@@ -1,8 +1,8 @@
 import { Body, Controller, Get, HttpCode, Param, Put, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import {  UpdateUserRequest, UpdateUserRespone, UserGetResponse, UserResponse } from '../model/user.model';
-import { WebResponse } from 'src/model/web.model';
-import { JwtGuard } from 'src/guards/jwt.guard';
+import {  UpdateUserRequest, UpdateUserRespone, UserGetResponse, } from '../model/user.model';
+import { WebResponse } from '../model/web.model';
+import { JwtGuard } from '../guards/jwt.guard';
 /*
     controller for user
 

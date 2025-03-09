@@ -1,8 +1,8 @@
 import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { PrismaService } from 'src/common/prisma.service';
-import { ValidationService } from 'src/common/validate.service';
-import { BookGenreRequest, BookGenreResponse, CreateGenreRequest, CreateGenreResponse, GenreBookListResponse, GetGenreResponse } from 'src/model/genre.model';
+import { PrismaService } from '../common/prisma.service';
+import { ValidationService } from '../common/validate.service';
+import { BookGenreRequest, CreateGenreRequest, CreateGenreResponse, GetGenreResponse } from 'src/model/genre.model';
 import { Logger } from 'winston';
 import { BookmarkValidation } from './bookmark.validation';
 

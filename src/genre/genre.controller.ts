@@ -1,9 +1,8 @@
-import { Body, Controller, Delete, Get, HttpCode, Inject, Param, Post, Put, UseGuards } from '@nestjs/common';
-import { BookGenreRequest, CreateGenreResponse, GetGenreResponse } from 'src/model/genre.model';
-import { WebResponse } from 'src/model/web.model';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { BookGenreRequest, CreateGenreResponse, GetGenreResponse } from '../model/genre.model';
+import { WebResponse } from '../model/web.model';
 import { GenreService } from './genre.service';
-import { AdminGuard } from '../book/guard/admin.guard';
-import { JwtGuard } from 'src/guards/jwt.guard';
+import { JwtGuard } from '../guards/jwt.guard';
 
 @Controller('api/genre')
 export class GenreController {

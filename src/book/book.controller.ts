@@ -1,9 +1,8 @@
-import { WebResponse } from 'src/model/web.model';
+import { WebResponse } from '../model/web.model';
 import { BookService } from './book.service';
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
-import { BookRes, CreateBookRequest, CreateBookResponse, UpdateBookResponse } from 'src/model/book.model';
-import { AdminGuard } from './guard/admin.guard';
-import { JwtGuard } from 'src/guards/jwt.guard';
+import { BookRes, CreateBookRequest, CreateBookResponse, UpdateBookResponse } from '../model/book.model';
+import { JwtGuard } from '../guards/jwt.guard';
 
 @Controller('api/book')
 export class BookController {

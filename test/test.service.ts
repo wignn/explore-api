@@ -9,8 +9,8 @@ export class TestService {
 
   async deleteAll() {
     await this.deleteUser();
-    await this.deleteGenre();
-    await this.deleteBook();
+    // await this.deleteGenre();
+    // await this.deleteBook();
 
   }
 
@@ -43,11 +43,10 @@ export class TestService {
     }
     await this.prismaService.user.create({
       data: {
-        id: 'test',
         username: 'test',
         name: 'test',
         email: 'test@gmail.com',
-        password: await bcrypt.hash('test123', 10),
+        password: await bcrypt.hash('test1234', 10),
         token: 'test',
         valToken: 'test',
       },

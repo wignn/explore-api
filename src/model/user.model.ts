@@ -1,7 +1,28 @@
+import { ApiProperty } from "@nestjs/swagger";
+
 export class RegisterUserRequest {
+  @ApiProperty({
+    example:"wign",
+    required: false
+  })
   name?: string;
+  
+  @ApiProperty({
+    example:"wign",
+    required:true
+  })
+
   username: string;
+  @ApiProperty({
+    example:"wign",
+    required: true
+  })
+
   email: string;
+  @ApiProperty({
+    example:"password",
+    required: true
+  })
   password: string;
 }
 
@@ -19,8 +40,18 @@ export class UserResponse {
 }
 
 export class LoginUserRequest {
+  @ApiProperty({
+    example:"wign",
+    required:true
+  })
+
   username: string;
+  @ApiProperty({
+    example:"password",
+    required: true
+  })
   password: string;
+
 }
 
 export class ResetRequest {

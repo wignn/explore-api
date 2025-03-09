@@ -1,10 +1,9 @@
-import { Controller, Request } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Post, Body, HttpCode, Patch, UseGuards } from '@nestjs/common';
 import { RegisterUserRequest, LoginUserRequest, ResetRequest, UserResponse } from '../model/user.model';
-import { WebResponse } from 'src/model/web.model';
-import { JwtGuard } from 'src/guards/jwt.guard';
-import { RefreshJwtGuard } from 'src/guards/refresh.guard';
+import { WebResponse } from '../model/web.model';
+import { RefreshJwtGuard } from '../guards/refresh.guard';
 @Controller('api/auth')
 export class AuthController {
     constructor(private authService: AuthService) { }
