@@ -4,7 +4,7 @@ export class BookValidation {
     static readonly CREATE: ZodType = z.object({
         cover: z.string().min(3),
         title: z.string().min(3),
-        author: z.string().min(3),
+        author: z.string().min(1),
         description: z.string().min(3),
         status: z.enum(['Completed', 'Drop', 'Ongoing']).optional(),
         language: z.enum(['English', 'Japanese', 'Korean']).optional(),
