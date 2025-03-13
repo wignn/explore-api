@@ -55,4 +55,17 @@ export class BookmarkController {
             data: result,
         }
     }    
+
+
+    @Get('isBookmarked/:userId/:bookId')
+    @HttpCode(200)
+    async isBookmarked(
+        @Param('userId') userId: string,
+        @Param('bookId') bookId: string,
+    ): Promise<WebResponse<string>> {
+        const result = await this.BookmarkService.isBookmark(userId, bookId);
+        return {
+            data: result,
+        }
+    }
 }

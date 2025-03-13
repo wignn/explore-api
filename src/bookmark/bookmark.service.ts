@@ -108,4 +108,22 @@ export class BookmarkService {
       })),
     }));
   }
+
+
+  async isBookmark(userId: string, bookId: string): Promise<any> {
+    this.logger.info(`Checking bookmark by user id ${userId} and book id ${bookId}`);
+    const bookmark = await this.PrismaService.bookmark.findFirst({
+      where: {
+        userId: userId,
+        bookId: bookId,
+      },
+    });
+
+    if (!bookmark) {
+      return null;
+    }
+    return {
+      id: bookmark?.id,
+    }
+  }
 }
