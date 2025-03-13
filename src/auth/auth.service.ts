@@ -113,7 +113,7 @@ export class AuthService {
         const user = await this.prismaService.user.create({
             data: {
                 ...registerRequest,
-                profilePic:'https://files.edgestore.dev/93ti9i3vqygrxg8l/myPublicImage/_public/b7608d16-14b6-4e2c-8efd-1ded26235976.png'
+                profilePic:'https://pub-f7660b0aa83f4a0ea4768b2faf5e9bd8.r2.dev/1741666539733-111233.webp'
             }
         });
 

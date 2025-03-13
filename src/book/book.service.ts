@@ -14,8 +14,7 @@ export class BookService {
         @Inject(WINSTON_MODULE_PROVIDER)
         private logger: Logger,
         private PrismaService: PrismaService
-    ) { }
-
+    ) {}
 
     async createBook(request: CreateBookRequest): Promise<CreateBookResponse> {
         this.logger.info(`Creating new book ${JSON.stringify(request)}`);
@@ -37,9 +36,58 @@ export class BookService {
         };
     }
 
-    async getBookList(): Promise<BookRes[]> {
+
+    
+    async getBookList(
+        page: number = 1,
+        limit: number = 10,
+        genre?: string,
+        status?: string,
+        language?: string,
+        author?: string,
+        title?: string
+    ): Promise<{ books: BookRes[]; totalBooks: number; totalPage: number }> {
         this.logger.info(`Getting book list`);
-        const bookList = await this.PrismaService.book.findMany({
+        page = Number(page);
+        limit = Number(limit);
+        const skip = (page - 1) * limit;
+        const whereClause: any = {};
+        if (genre) {
+            whereClause.genre = {
+                some: {
+                    genreId: {
+                        in: genre
+                    }
+                }
+            };
+        }
+    
+        if (status) {
+            whereClause.status = status;
+        }
+    
+        if (language) {
+            whereClause.language = language;
+        }
+    
+        if (author) {
+            whereClause.author = author;
+        }
+    
+        if (title) {
+            whereClause.title = {
+                contains: title,
+                mode: 'insensitive'
+            };
+        }
+        const totalBooks = await this.PrismaService.book.count({
+            where: whereClause,
+        });
+
+        const totalPage = Math.ceil(totalBooks / limit);
+    
+        const books = await this.PrismaService.book.findMany({
+            where: whereClause,
             include: {
                 genre: {
                     include: {
@@ -48,45 +96,52 @@ export class BookService {
                                 title: true,
                                 id: true
                             }
-                        },
-                        
+                        }
                     }
                 },
                 bookMark: true,
                 Chapter: true
-            }
+            },
+            orderBy: {
+                createdAt: 'desc'
+            },
+            take: limit,
+            skip: skip
         });
     
-        return bookList.map((book) => ({
-            id: book.id,
-            title: book.title,
-            cover: book.cover,
-            asset: book.asset ?? '',
-            author: book.author,
-            description: book.description,
-            createdAt: book.createdAt,
-            updatedAt: book.updatedAt,
-            popular: book.popular,
-            genre: book.genre.map((g) => ({
-                id: g.Genre.id,
-                title: g.Genre.title
+        return {
+            books: books.map((book) => ({
+                id: book.id,
+                title: book.title,
+                cover: book.cover,
+                asset: book.asset ?? '',
+                author: book.author,
+                status: book.status,
+                description: book.description,
+                createdAt: book.createdAt,
+                updatedAt: book.updatedAt,
+                popular: book.popular,
+                genre: book.genre.map((g) => ({
+                    id: g.Genre.id,
+                    title: g.Genre.title
+                })),
+                chapter: book.Chapter.map((c) => ({
+                    id: c.id,
+                    title: c.title,
+                    updatedAt: c.updatedAt,
+                })),
+                bookmark: book.bookMark.map((b) => ({
+                    id: b.id,
+                    userId: b.userId,
+                    bookId: b.bookId
+                }))
             })),
-            chapter: book.Chapter.map((c) => ({
-                id: c.id,
-                title: c.title,
-                content: c.content,
-                updatedAt: c.updatedAt,
-                description: c.description
-            })),
-            bookmark: book.bookMark.map((b) => ({
-                id: b.id,
-                userId: b.userId,
-                bookId: b.bookId
-            }))
-        }));
+            totalBooks,
+            totalPage
+            
+        };
     }
     
-
 
     async getBookQuery(query: string): Promise<any> {
         this.logger.info(`Getting book by id ${query}`);

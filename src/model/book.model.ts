@@ -1,5 +1,3 @@
-import { chapterResponse } from "./chapter.model";
-import { GetGenreResponse } from "./genre.model";
 
 export class CreateBookRequest {
   cover: string;
