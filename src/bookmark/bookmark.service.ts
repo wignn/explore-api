@@ -18,16 +18,24 @@ export class BookmarkService {
     private PrismaService: PrismaService,
   ) {}
 
-  async createBookmark(request: CreateBookmarkRequest): Promise<string> {
+  async createBookmark(request: CreateBookmarkRequest): Promise<{
+    id: string;
+    bookId: string;
+    userId: string;
+  }> {
     this.logger.info(`Creating new bookmark ${JSON.stringify(request)}`);
     const createBookmarkRequest: CreateBookmarkRequest =
       this.ValidationService.validate(BookmarkValidation.CREATE, request);
 
-    await this.PrismaService.bookmark.create({
+    const res = await this.PrismaService.bookmark.create({
       data: createBookmarkRequest,
     });
 
-    return 'Bookmark created';
+    return {
+      id: res.id,
+      bookId: res.bookId,
+      userId: res.userId,
+    };
   }
 
   async deleteBookmark(id: string): Promise<string> {
@@ -60,7 +68,7 @@ export class BookmarkService {
             Chapter: true,
           },
         },
-      }
+      },
     });
     return bookmarkList.map((bookmark) => ({
       id: bookmark.id,
@@ -107,5 +115,24 @@ export class BookmarkService {
         updatedAt: chapter.updatedAt,
       })),
     }));
+  }
+
+  async isBookmark(userId: string, bookId: string): Promise<any> {
+    this.logger.info(
+      `Checking bookmark by user id ${userId} and book id ${bookId}`,
+    );
+    const bookmark = await this.PrismaService.bookmark.findFirst({
+      where: {
+        userId: userId,
+        bookId: bookId,
+      },
+    });
+
+    if (!bookmark) {
+      return null;
+    }
+    return {
+      id: bookmark?.id,
+    };
   }
 }
