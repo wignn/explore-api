@@ -14,10 +14,14 @@ export class BookmarkController {
     @HttpCode(200)
     async createBookmark(
         @Body() request: CreateBookmarkRequest
-    ): Promise<WebResponse<string>> {
+    ): Promise<WebResponse<{
+        id: string,
+        bookId: string,
+        userId: string
+    }>> {
         const result = await this.BookmarkService.createBookmark(request);
         return {
-            message: result,
+            data: result,
         }
     }
 

@@ -173,7 +173,40 @@ export class BookService {
                 bookMark: true
             }
         });
-        return book
+        return {
+            asset: book?.asset ?? '',
+            id: book.id,
+            cover: book.cover,
+            title: book.title,
+            author: book.author,
+            description: book.description,
+            updatedAt: book.updatedAt,
+            createdAt: book.createdAt,
+            popular: book.popular,
+            status: book.status,
+            genre : book.genre.map((g) => ({
+                id: g.Genre.id,
+                title: g.Genre.title,
+                Genre: {
+                    id: g.Genre.id,
+                    title: g.Genre.title
+                }
+            })),
+            chapter: book.Chapter.map((c) => ({
+                id: c.id,
+                title: c.title,
+                updatedAt: c.updatedAt,
+                createdAt: c.createdAt,
+                chapterNum: c.chapterNum
+            })),
+
+            bookmark: book.bookMark.map((b) => ({
+                id: b.id,
+                userId: b.userId,
+                bookId: b.bookId
+            }))
+        }
+ 
     }
 
 
