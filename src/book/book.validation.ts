@@ -19,6 +19,7 @@ export class BookValidation {
         asset: z.string().min(3).optional(),
         status: z.string().min(3).optional(),
         language: z.string().min(3).optional(),
-        realaseDate: z.number().min(3).optional()
+        realaseDate: z.number().min(3).optional(),
+        genre: z.array(z.string()).optional(),
     })
 }

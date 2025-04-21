@@ -38,6 +38,7 @@ export class BookRes {
   description: string;
   cover: string;
   asset: string;
+  
   createdAt: Date;
   updatedAt: Date;
 }
@@ -52,6 +53,7 @@ export class updateBookRequest {
   status?: BookStatus;
   language?: Language;
   realaseDate?: number;
+  genre?: string[];
 }
 
 

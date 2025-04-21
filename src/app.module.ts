@@ -12,6 +12,7 @@ import { ChapterModule } from './chapter/chapter.module';
 import { AdminModule } from './admin/admin.module';
 import { TestModule } from '../test/test.module';
 import { ApiKeyMiddleware } from './middleware/auth/auth.middleware';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ApiKeyMiddleware } from './middleware/auth/auth.middleware';
     ChapterModule,
     AdminModule,
     TestModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtService],

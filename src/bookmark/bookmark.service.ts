@@ -87,7 +87,7 @@ export class BookmarkService {
     }));
   }
 
-  async getBookmarkByUserId(userId: string): Promise<GetBookmarkResponse[]> {
+  async getBookmarkByUserId(userId: string): Promise<any[]> {
     this.logger.info(`Getting bookmark list by user id ${userId}`);
     const bookmarkList = await this.PrismaService.bookmark.findMany({
       where: {

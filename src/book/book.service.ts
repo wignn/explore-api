@@ -183,6 +183,7 @@ export class BookService {
             updatedAt: book.updatedAt,
             createdAt: book.createdAt,
             popular: book.popular,
+            realaseDate: book.realaseDate,
             status: book.status,
             genre : book.genre.map((g) => ({
                 id: g.Genre.id,
@@ -278,22 +279,39 @@ export class BookService {
 
     async updateBook(id: string, request: updateBookRequest): Promise<UpdateBookResponse> {
         this.logger.info(`Updating book ${id} with ${JSON.stringify(request)}`);
-
+    
         const updateBookRequest: updateBookRequest = this.ValidationService.validate(BookValidation.UPDATE, request);
-
+    
+        const { genre, ...f } = updateBookRequest;
+    
         const book = await this.PrismaService.book.update({
             where: {
                 id: id,
             },
-            data: updateBookRequest,
-        })
-
+            data: {
+                ...f,
+                ...(genre && {
+                    genre: {
+                        deleteMany: {},
+                        create: genre.map(genreId => ({ 
+                            Genre: { 
+                                connect: { id: genreId } 
+                            }
+                        }))
+                    },
+                }),
+            },
+            include: {
+                genre: true, 
+            }
+        });
+    
         return {
             ...book,
             asset: book.asset ?? '',
-
         };
     }
+    
 
     async deleteBook(id: string): Promise<string> {
         this.logger.info(`Deleting book ${id}`);
